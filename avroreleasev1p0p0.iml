@@ -13,5 +13,7 @@
     <orderEntry type="library" name="jackson-mapper-asl-1.9.13" level="project" />
     <orderEntry type="library" name="paranamer-ant-2.8" level="project" />
     <orderEntry type="library" name="paranamer-2.8" level="project" />
+    <orderEntry type="library" name="qdox-1.9.1" level="project" />
+    <orderEntry type="library" name="asm-3.0" level="project" />
   </component>
 </module>
