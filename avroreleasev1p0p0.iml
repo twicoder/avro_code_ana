@@ -11,5 +11,7 @@
     <orderEntry type="library" name="ant-1.10.3" level="project" />
     <orderEntry type="library" name="jackson-core-asl-1.9.13" level="project" />
     <orderEntry type="library" name="jackson-mapper-asl-1.9.13" level="project" />
+    <orderEntry type="library" name="paranamer-ant-2.8" level="project" />
+    <orderEntry type="library" name="paranamer-2.8" level="project" />
   </component>
 </module>
