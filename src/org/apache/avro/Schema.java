@@ -20,7 +20,8 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/** An abstract data type.
+/**
+ * An abstract data type.
  * <p>A schema may be one of:
  * <ul>
  * <li>A <i>record</i>, mapping field names to field value data;
@@ -48,133 +49,193 @@ public abstract class Schema {
         FACTORY.setCodec(MAPPER);
     }
 
-    /** The type of a schema. */
-    public enum Type
-    { RECORD, ENUM, ARRAY, MAP, UNION, FIXED, STRING, BYTES,
-        INT, LONG, FLOAT, DOUBLE, BOOLEAN, NULL };
+    /**
+     * The type of a schema.
+     */
+    public enum Type {
+        RECORD, ENUM, ARRAY, MAP, UNION, FIXED, STRING, BYTES,
+        INT, LONG, FLOAT, DOUBLE, BOOLEAN, NULL
+    }
 
     private final Type type;
 
-    Schema(Type type) { this.type = type; }
+    Schema(Type type) {
+        this.type = type;
+    }
 
-    /** Create a schema for a primitive type. */
+    /**
+     * Create a schema for a primitive type.
+     */
     public static Schema create(Type type) {
         switch (type) {
-            case STRING:  return STRING_SCHEMA;
-            case BYTES:   return BYTES_SCHEMA;
-            case INT:     return INT_SCHEMA ;
-            case LONG:    return LONG_SCHEMA ;
-            case FLOAT:   return FLOAT_SCHEMA;
-            case DOUBLE:  return DOUBLE_SCHEMA;
-            case BOOLEAN: return BOOLEAN_SCHEMA;
-            case NULL:    return NULL_SCHEMA;
-            default: throw new AvroRuntimeException("Can't create a: "+type);
+            case STRING:
+                return STRING_SCHEMA;
+            case BYTES:
+                return BYTES_SCHEMA;
+            case INT:
+                return INT_SCHEMA;
+            case LONG:
+                return LONG_SCHEMA;
+            case FLOAT:
+                return FLOAT_SCHEMA;
+            case DOUBLE:
+                return DOUBLE_SCHEMA;
+            case BOOLEAN:
+                return BOOLEAN_SCHEMA;
+            case NULL:
+                return NULL_SCHEMA;
+            default:
+                throw new AvroRuntimeException("Can't create a: " + type);
         }
     }
 
-    /** Create an anonymous record schema. */
-    public static Schema createRecord(LinkedHashMap<String,Field> fields) {
+    /**
+     * Create an anonymous record schema.
+     */
+    public static Schema createRecord(LinkedHashMap<String, Field> fields) {
         Schema result = createRecord(null, null, false);
         result.setFields(fields);
         return result;
     }
 
-    /** Create a named record schema. */
+    /**
+     * Create a named record schema.
+     */
     public static Schema createRecord(String name, String namespace,
                                       boolean isError) {
         return new RecordSchema(name, namespace, isError);
     }
 
-    /** Create an enum schema. */
+    /**
+     * Create an enum schema.
+     */
     public static Schema createEnum(String name, String namespace,
                                     List<String> values) {
         return new EnumSchema(name, namespace, values);
     }
 
-    /** Create an array schema. */
+    /**
+     * Create an array schema.
+     */
     public static Schema createArray(Schema elementType) {
         return new ArraySchema(elementType);
     }
 
-    /** Create a map schema. */
+    /**
+     * Create a map schema.
+     */
     public static Schema createMap(Schema valueType) {
         return new MapSchema(valueType);
     }
 
-    /** Create a union schema. */
+    /**
+     * Create a union schema.
+     */
     public static Schema createUnion(List<Schema> types) {
         return new UnionSchema(types);
     }
 
-    /** Create a union schema. */
+    /**
+     * Create a union schema.
+     */
     public static Schema createFixed(String name, String space, int size) {
         return new FixedSchema(name, space, size);
     }
 
-    /** Return the type of this schema. */
-    public Type getType() { return type; }
+    /**
+     * Return the type of this schema.
+     */
+    public Type getType() {
+        return type;
+    }
 
-    /** If this is a record, returns its fields. */
+    /**
+     * If this is a record, returns its fields.
+     */
     public Map<String, Field> getFields() {
-        throw new AvroRuntimeException("Not a record: "+this);
+        throw new AvroRuntimeException("Not a record: " + this);
     }
 
-    /** If this is a record, enumerate its field names and their schemas. */
-    public Iterable<Map.Entry<String,Schema>> getFieldSchemas() {
-        throw new AvroRuntimeException("Not a record: "+this);
+    /**
+     * If this is a record, enumerate its field names and their schemas.
+     */
+    public Iterable<Map.Entry<String, Schema>> getFieldSchemas() {
+        throw new AvroRuntimeException("Not a record: " + this);
     }
 
-    /** If this is a record, set its fields. */
-    public void setFields(LinkedHashMap<String,Field> fields) {
-        throw new AvroRuntimeException("Not a record: "+this);
+    /**
+     * If this is a record, set its fields.
+     */
+    public void setFields(LinkedHashMap<String, Field> fields) {
+        throw new AvroRuntimeException("Not a record: " + this);
     }
 
-    /** If this is an enum, return its symbols. */
+    /**
+     * If this is an enum, return its symbols.
+     */
     public List<String> getEnumSymbols() {
-        throw new AvroRuntimeException("Not an enum: "+this);
+        throw new AvroRuntimeException("Not an enum: " + this);
     }
 
-    /** If this is an enum, return a symbol's ordinal value. */
+    /**
+     * If this is an enum, return a symbol's ordinal value.
+     */
     public int getEnumOrdinal(String symbol) {
-        throw new AvroRuntimeException("Not an enum: "+this);
+        throw new AvroRuntimeException("Not an enum: " + this);
     }
 
-    /** If this is a record, enum or fixed, returns its name, if any. */
+    /**
+     * If this is a record, enum or fixed, returns its name, if any.
+     */
     public String getName() {
-        throw new AvroRuntimeException("Not a named type: "+this);
+        throw new AvroRuntimeException("Not a named type: " + this);
     }
 
-    /** If this is a record, enum or fixed, returns its namespace, if any. */
+    /**
+     * If this is a record, enum or fixed, returns its namespace, if any.
+     */
     public String getNamespace() {
-        throw new AvroRuntimeException("Not a named type: "+this);
+        throw new AvroRuntimeException("Not a named type: " + this);
     }
 
-    /** Returns true if this record is an error type. */
+    /**
+     * Returns true if this record is an error type.
+     */
     public boolean isError() {
-        throw new AvroRuntimeException("Not a record: "+this);
+        throw new AvroRuntimeException("Not a record: " + this);
     }
 
-    /** If this is an array, returns its element type. */
+    /**
+     * If this is an array, returns its element type.
+     */
     public Schema getElementType() {
-        throw new AvroRuntimeException("Not an array: "+this);
+        throw new AvroRuntimeException("Not an array: " + this);
     }
 
-    /** If this is a map, returns its value type. */
+    /**
+     * If this is a map, returns its value type.
+     */
     public Schema getValueType() {
-        throw new AvroRuntimeException("Not a map: "+this);
+        throw new AvroRuntimeException("Not a map: " + this);
     }
 
-    /** If this is a union, returns its types. */
+    /**
+     * If this is a union, returns its types.
+     */
     public List<Schema> getTypes() {
-        throw new AvroRuntimeException("Not a union: "+this);
+        throw new AvroRuntimeException("Not a union: " + this);
     }
 
-    /** If this is fixed, returns its size. */
+    /**
+     * If this is fixed, returns its size.
+     */
     public int getFixedSize() {
-        throw new AvroRuntimeException("Not fixed: "+this);
+        throw new AvroRuntimeException("Not fixed: " + this);
     }
 
-    /** Render this as <a href="http://json.org/">JSON</a>.*/
+    /**
+     * Render this as <a href="http://json.org/">JSON</a>.
+     */
     public String toString() {
         try {
             StringWriter writer = new StringWriter();
@@ -190,30 +251,50 @@ public abstract class Schema {
     abstract void toJson(Names names, JsonGenerator gen) throws IOException;
 
     void fieldsToJson(Names names, JsonGenerator gen) throws IOException {
-        throw new AvroRuntimeException("Not a record: "+this);
+        throw new AvroRuntimeException("Not a record: " + this);
     }
 
 
     public boolean equals(Object o) {
         if (o == this) return true;
-        return o instanceof Schema && type.equals(((Schema)o).type);
+        return o instanceof Schema && type.equals(((Schema) o).type);
     }
-    public int hashCode() { return getType().hashCode(); }
 
-    /** A field within a record. */
+    public int hashCode() {
+        return getType().hashCode();
+    }
+
+    /**
+     * A field within a record.
+     */
     public static class Field {
         private int position = -1;
         private final Schema schema;
         private final JsonNode defaultValue;
+
         public Field(Schema schema, JsonNode defaultValue) {
             this.schema = schema;
             this.defaultValue = defaultValue;
         }
-        /** The position of this field within the record. */
-        public int pos() { return position; }
-        /** This field's {@link Schema}. */
-        public Schema schema() { return schema; }
-        public JsonNode defaultValue() { return defaultValue; }
+
+        /**
+         * The position of this field within the record.
+         */
+        public int pos() {
+            return position;
+        }
+
+        /**
+         * This field's {@link Schema}.
+         */
+        public Schema schema() {
+            return schema;
+        }
+
+        public JsonNode defaultValue() {
+            return defaultValue;
+        }
+
         public boolean equals(Object other) {
             if (other == this) return true;
             if (!(other instanceof Field)) return false;
@@ -229,13 +310,21 @@ public abstract class Schema {
     private static abstract class NamedSchema extends Schema {
         protected final String name;
         protected final String space;
+
         public NamedSchema(Type type, String name, String space) {
             super(type);
             this.name = name;
             this.space = space;
         }
-        public String getName() { return name; }
-        public String getNamespace() { return space; }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getNamespace() {
+            return space;
+        }
+
         public boolean writeNameRef(Names names, JsonGenerator gen)
                 throws IOException {
             if (this.equals(names.get(name))) {
@@ -246,73 +335,98 @@ public abstract class Schema {
             }
             return false;
         }
+
         public void writeName(Names names, JsonGenerator gen) throws IOException {
-            if (name != null)  gen.writeStringField("name", name);
+            if (name != null) gen.writeStringField("name", name);
             if (space != null) gen.writeStringField("namespace", space);
         }
+
         public boolean equalNames(NamedSchema that) {
             return that == null ? false
-                    : (name==null ? that.name==null : name.equals(that.name))
-                    && (space==null ? that.space==null : space.equals(that.space));
+                    : (name == null ? that.name == null : name.equals(that.name))
+                    && (space == null ? that.space == null : space.equals(that.space));
         }
+
         public int hashCode() {
             return getType().hashCode()
-                    + (name==null ? 0 : name.hashCode())
-                    + (space==null ? 0 : space.hashCode());
+                    + (name == null ? 0 : name.hashCode())
+                    + (space == null ? 0 : space.hashCode());
         }
     }
 
     private static class SeenPair {
-        private Object s1; private Object s2;
-        private SeenPair(Object s1, Object s2) { this.s1 = s1; this.s2 = s2; }
-        public boolean equals(Object o) {
-            return this.s1 == ((SeenPair)o).s1 && this.s2 == ((SeenPair)o).s2;
+        private Object s1;
+        private Object s2;
+
+        private SeenPair(Object s1, Object s2) {
+            this.s1 = s1;
+            this.s2 = s2;
         }
+
+        public boolean equals(Object o) {
+            return this.s1 == ((SeenPair) o).s1 && this.s2 == ((SeenPair) o).s2;
+        }
+
         public int hashCode() {
             return System.identityHashCode(s1) + System.identityHashCode(s2);
         }
     }
 
     private static final ThreadLocal<Set> SEEN_EQUALS = new ThreadLocal<Set>() {
-        protected Set initialValue() { return new HashSet(); }
-    };
-    private static final ThreadLocal<Map> SEEN_HASHCODE = new ThreadLocal<Map>() {
-        protected Map initialValue() { return new IdentityHashMap(); }
+        protected Set initialValue() {
+            return new HashSet();
+        }
     };
 
-    @SuppressWarnings(value="unchecked")
+    private static final ThreadLocal<Map> SEEN_HASHCODE = new ThreadLocal<Map>() {
+        protected Map initialValue() {
+            return new IdentityHashMap();
+        }
+    };
+
+    @SuppressWarnings(value = "unchecked")
     private static class RecordSchema extends NamedSchema {
-        private Map<String,Field> fields;
-        private Iterable<Map.Entry<String,Schema>> fieldSchemas;
+        private Map<String, Field> fields;
+        private Iterable<Map.Entry<String, Schema>> fieldSchemas;
         private final boolean isError;
+
         public RecordSchema(String name, String space, boolean isError) {
             super(Type.RECORD, name, space);
             this.isError = isError;
         }
-        public boolean isError() { return isError; }
-        public Map<String, Field> getFields() { return fields; }
+
+        public boolean isError() {
+            return isError;
+        }
+
+        public Map<String, Field> getFields() {
+            return fields;
+        }
+
         public Iterable<Map.Entry<String, Schema>> getFieldSchemas() {
             return fieldSchemas;
         }
-        public void setFields(LinkedHashMap<String,Field> fields) {
+
+        public void setFields(LinkedHashMap<String, Field> fields) {
             if (this.fields != null)
                 throw new AvroRuntimeException("Fields are already set");
             int i = 0;
-            LinkedHashMap<String,Schema> schemas = new LinkedHashMap<String,Schema>();
+            LinkedHashMap<String, Schema> schemas = new LinkedHashMap<String, Schema>();
             for (Map.Entry<String, Field> pair : fields.entrySet()) {
                 Field f = pair.getValue();
                 if (f.position != -1)
-                    throw new AvroRuntimeException("Field already used: "+f);
+                    throw new AvroRuntimeException("Field already used: " + f);
                 f.position = i++;
                 schemas.put(pair.getKey(), f.schema());
             }
             this.fields = fields;
             this.fieldSchemas = schemas.entrySet();
         }
+
         public boolean equals(Object o) {
             if (o == this) return true;
             if (!(o instanceof RecordSchema)) return false;
-            RecordSchema that = (RecordSchema)o;
+            RecordSchema that = (RecordSchema) o;
             if (!equalNames(that)) return false;
             if (!(o instanceof RecordSchema)) return false;
             Set seen = SEEN_EQUALS.get();
@@ -320,11 +434,12 @@ public abstract class Schema {
             if (seen.contains(here)) return true;       // prevent stack overflow
             try {
                 seen.add(here);
-                return fields.equals(((RecordSchema)o).fields);
+                return fields.equals(((RecordSchema) o).fields);
             } finally {
                 seen.remove(here);
             }
         }
+
         public int hashCode() {
             Map seen = SEEN_HASHCODE.get();
             if (seen.containsKey(this)) return 0;       // prevent stack overflow
@@ -335,10 +450,11 @@ public abstract class Schema {
                 seen.remove(this);
             }
         }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             if (writeNameRef(names, gen)) return;
             gen.writeStartObject();
-            gen.writeStringField("type", isError?"error":"record");
+            gen.writeStringField("type", isError ? "error" : "record");
             writeName(names, gen);
             gen.writeFieldName("fields");
             fieldsToJson(names, gen);
@@ -364,24 +480,36 @@ public abstract class Schema {
 
     private static class EnumSchema extends NamedSchema {
         private final List<String> symbols;
-        private final Map<String,Integer> ordinals;
+        private final Map<String, Integer> ordinals;
+
         public EnumSchema(String name, String space, List<String> symbols) {
             super(Type.ENUM, name, space);
             this.symbols = symbols;
-            this.ordinals = new HashMap<String,Integer>();
+            this.ordinals = new HashMap<String, Integer>();
             int i = 0;
             for (String symbol : symbols)
                 ordinals.put(symbol, i++);
         }
-        public List<String> getEnumSymbols() { return symbols; }
-        public int getEnumOrdinal(String symbol) { return ordinals.get(symbol); }
+
+        public List<String> getEnumSymbols() {
+            return symbols;
+        }
+
+        public int getEnumOrdinal(String symbol) {
+            return ordinals.get(symbol);
+        }
+
         public boolean equals(Object o) {
             if (o == this) return true;
             if (!(o instanceof EnumSchema)) return false;
-            EnumSchema that = (EnumSchema)o;
+            EnumSchema that = (EnumSchema) o;
             return equalNames(that) && symbols.equals(that.symbols);
         }
-        public int hashCode() { return super.hashCode() + symbols.hashCode(); }
+
+        public int hashCode() {
+            return super.hashCode() + symbols.hashCode();
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             if (writeNameRef(names, gen)) return;
             gen.writeStartObject();
@@ -397,17 +525,26 @@ public abstract class Schema {
 
     private static class ArraySchema extends Schema {
         private final Schema elementType;
+
         public ArraySchema(Schema elementType) {
             super(Type.ARRAY);
             this.elementType = elementType;
         }
-        public Schema getElementType() { return elementType; }
+
+        public Schema getElementType() {
+            return elementType;
+        }
+
         public boolean equals(Object o) {
             if (o == this) return true;
             return o instanceof ArraySchema
-                    && elementType.equals(((ArraySchema)o).elementType);
+                    && elementType.equals(((ArraySchema) o).elementType);
         }
-        public int hashCode() {return getType().hashCode()+elementType.hashCode();}
+
+        public int hashCode() {
+            return getType().hashCode() + elementType.hashCode();
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeStartObject();
             gen.writeStringField("type", "array");
@@ -419,19 +556,26 @@ public abstract class Schema {
 
     private static class MapSchema extends Schema {
         private final Schema valueType;
+
         public MapSchema(Schema valueType) {
             super(Type.MAP);
             this.valueType = valueType;
         }
-        public Schema getValueType() { return valueType; }
+
+        public Schema getValueType() {
+            return valueType;
+        }
+
         public boolean equals(Object o) {
             if (o == this) return true;
             return o instanceof MapSchema
-                    && valueType.equals(((MapSchema)o).valueType);
+                    && valueType.equals(((MapSchema) o).valueType);
         }
+
         public int hashCode() {
-            return getType().hashCode()+valueType.hashCode();
+            return getType().hashCode() + valueType.hashCode();
         }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeStartObject();
             gen.writeStringField("type", "map");
@@ -443,6 +587,7 @@ public abstract class Schema {
 
     private static class UnionSchema extends Schema {
         private final List<Schema> types;
+
         public UnionSchema(List<Schema> types) {
             super(Type.UNION);
             this.types = types;
@@ -450,24 +595,32 @@ public abstract class Schema {
             for (Schema type : types) {                 // check legality of union
                 switch (type.getType()) {
                     case UNION:
-                        throw new AvroRuntimeException("Nested union: "+this);
+                        throw new AvroRuntimeException("Nested union: " + this);
                     case RECORD:
                         if (type.getName() != null)
                             continue;
                     default:
                         int mask = 1 << type.getType().ordinal();
                         if ((seen & mask) != 0)
-                            throw new AvroRuntimeException("Ambiguous union: "+this);
+                            throw new AvroRuntimeException("Ambiguous union: " + this);
                         seen |= mask;
                 }
             }
         }
-        public List<Schema> getTypes() { return types; }
+
+        public List<Schema> getTypes() {
+            return types;
+        }
+
         public boolean equals(Object o) {
             if (o == this) return true;
-            return o instanceof UnionSchema && types.equals(((UnionSchema)o).types);
+            return o instanceof UnionSchema && types.equals(((UnionSchema) o).types);
         }
-        public int hashCode() {return getType().hashCode()+types.hashCode();}
+
+        public int hashCode() {
+            return getType().hashCode() + types.hashCode();
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeStartArray();
             for (Schema type : types)
@@ -478,17 +631,26 @@ public abstract class Schema {
 
     private static class FixedSchema extends NamedSchema {
         private final int size;
+
         public FixedSchema(String name, String space, int size) {
             super(Type.FIXED, name, space);
             this.size = size;
         }
-        public int getFixedSize() { return size; }
+
+        public int getFixedSize() {
+            return size;
+        }
+
         public boolean equals(Object o) {
             if (o == this) return true;
-            FixedSchema that = (FixedSchema)o;
+            FixedSchema that = (FixedSchema) o;
             return equalNames(that) && size == that.size;
         }
-        public int hashCode() { return super.hashCode() + size; }
+
+        public int hashCode() {
+            return super.hashCode() + size;
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             if (writeNameRef(names, gen)) return;
             gen.writeStartObject();
@@ -500,69 +662,93 @@ public abstract class Schema {
     }
 
     private static class StringSchema extends Schema {
-        public StringSchema() { super(Type.STRING); }
+        public StringSchema() {
+            super(Type.STRING);
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeString("string");
         }
     }
 
     private static class BytesSchema extends Schema {
-        public BytesSchema() { super(Type.BYTES); }
+        public BytesSchema() {
+            super(Type.BYTES);
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeString("bytes");
         }
     }
 
     private static class IntSchema extends Schema {
-        public IntSchema() { super(Type.INT); }
+        public IntSchema() {
+            super(Type.INT);
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeString("int");
         }
     }
 
     private static class LongSchema extends Schema {
-        public LongSchema() { super(Type.LONG); }
+        public LongSchema() {
+            super(Type.LONG);
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeString("long");
         }
     }
 
     private static class FloatSchema extends Schema {
-        public FloatSchema() { super(Type.FLOAT); }
+        public FloatSchema() {
+            super(Type.FLOAT);
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeString("float");
         }
     }
 
     private static class DoubleSchema extends Schema {
-        public DoubleSchema() { super(Type.DOUBLE); }
+        public DoubleSchema() {
+            super(Type.DOUBLE);
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeString("double");
         }
     }
 
     private static class BooleanSchema extends Schema {
-        public BooleanSchema() { super(Type.BOOLEAN); }
+        public BooleanSchema() {
+            super(Type.BOOLEAN);
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeString("boolean");
         }
     }
 
     private static class NullSchema extends Schema {
-        public NullSchema() { super(Type.NULL); }
+        public NullSchema() {
+            super(Type.NULL);
+        }
+
         void toJson(Names names, JsonGenerator gen) throws IOException {
             gen.writeString("null");
         }
     }
 
-    private static final StringSchema  STRING_SCHEMA =  new StringSchema();
-    private static final BytesSchema   BYTES_SCHEMA =   new BytesSchema();
-    private static final IntSchema     INT_SCHEMA =     new IntSchema();
-    private static final LongSchema    LONG_SCHEMA =    new LongSchema();
-    private static final FloatSchema   FLOAT_SCHEMA =   new FloatSchema();
-    private static final DoubleSchema  DOUBLE_SCHEMA =  new DoubleSchema();
+    private static final StringSchema STRING_SCHEMA = new StringSchema();
+    private static final BytesSchema BYTES_SCHEMA = new BytesSchema();
+    private static final IntSchema INT_SCHEMA = new IntSchema();
+    private static final LongSchema LONG_SCHEMA = new LongSchema();
+    private static final FloatSchema FLOAT_SCHEMA = new FloatSchema();
+    private static final DoubleSchema DOUBLE_SCHEMA = new DoubleSchema();
     private static final BooleanSchema BOOLEAN_SCHEMA = new BooleanSchema();
-    private static final NullSchema    NULL_SCHEMA =    new NullSchema();
+    private static final NullSchema NULL_SCHEMA = new NullSchema();
 
     public static Schema parse(File file) throws IOException {
         JsonParser parser = FACTORY.createJsonParser(file);
@@ -573,29 +759,37 @@ public abstract class Schema {
         }
     }
 
-    /** Construct a schema from <a href="http://json.org/">JSON</a> text. */
+    /**
+     * Construct a schema from <a href="http://json.org/">JSON</a> text.
+     */
     public static Schema parse(String jsonSchema) {
         return parse(parseJson(jsonSchema), new Names());
     }
 
     static final Names PRIMITIVES = new Names(null);
+
     static {
-        PRIMITIVES.put("string",  STRING_SCHEMA);
-        PRIMITIVES.put("bytes",   BYTES_SCHEMA);
-        PRIMITIVES.put("int",     INT_SCHEMA);
-        PRIMITIVES.put("long",    LONG_SCHEMA);
-        PRIMITIVES.put("float",   FLOAT_SCHEMA);
-        PRIMITIVES.put("double",  DOUBLE_SCHEMA);
+        PRIMITIVES.put("string", STRING_SCHEMA);
+        PRIMITIVES.put("bytes", BYTES_SCHEMA);
+        PRIMITIVES.put("int", INT_SCHEMA);
+        PRIMITIVES.put("long", LONG_SCHEMA);
+        PRIMITIVES.put("float", FLOAT_SCHEMA);
+        PRIMITIVES.put("double", DOUBLE_SCHEMA);
         PRIMITIVES.put("boolean", BOOLEAN_SCHEMA);
-        PRIMITIVES.put("null",    NULL_SCHEMA);
+        PRIMITIVES.put("null", NULL_SCHEMA);
     }
 
     static class Names extends LinkedHashMap<String, Schema> {
         private Names defaults = PRIMITIVES;
         private String space;                         // default namespace
 
-        public Names(Names defaults) { this.defaults = defaults; }
-        public Names() { this(PRIMITIVES); }
+        public Names(Names defaults) {
+            this.defaults = defaults;
+        }
+
+        public Names() {
+            this(PRIMITIVES);
+        }
 
         @Override
         public Schema get(Object name) {
@@ -605,33 +799,46 @@ public abstract class Schema {
                 return defaults.get(name);
             return null;
         }
+
         @Override
         public Schema put(String name, Schema schema) {
             if (get(name) != null)
-                throw new SchemaParseException("Can't redefine: "+name);
+                throw new SchemaParseException("Can't redefine: " + name);
             return super.put(name, schema);
         }
+
         public Names except(String name) {
             Names result = new Names(this);
             result.clear(name);
             return result;
         }
-        public String space() { return space; }
-        public void space(String space) { this.space = space; }
-        private void clear(String name) { super.put(name, null); }
+
+        public String space() {
+            return space;
+        }
+
+        public void space(String space) {
+            this.space = space;
+        }
+
+        private void clear(String name) {
+            super.put(name, null);
+        }
     }
 
-    /** @see #parse(String) */
+    /**
+     * @see #parse(String)
+     */
     static Schema parse(JsonNode schema, Names names) {
         if (schema.isTextual()) {                     // name
             Schema result = names.get(schema.getTextValue());
             if (result == null)
-                throw new SchemaParseException("Undefined name: "+schema);
+                throw new SchemaParseException("Undefined name: " + schema);
             return result;
         } else if (schema.isObject()) {
             JsonNode typeNode = schema.get("type");
             if (typeNode == null)
-                throw new SchemaParseException("No type: "+schema);
+                throw new SchemaParseException("No type: " + schema);
             String type = typeNode.getTextValue();
             String name = null, space = null;
             if (type.equals("record") || type.equals("error")
@@ -639,25 +846,25 @@ public abstract class Schema {
                 JsonNode nameNode = schema.get("name");
                 name = nameNode != null ? nameNode.getTextValue() : null;
                 JsonNode spaceNode = schema.get("namespace");
-                space = spaceNode!=null?spaceNode.getTextValue():names.space();
+                space = spaceNode != null ? spaceNode.getTextValue() : names.space();
                 if (name == null)
-                    throw new SchemaParseException("No name in schema: "+schema);
+                    throw new SchemaParseException("No name in schema: " + schema);
             }
             if (type.equals("record") || type.equals("error")) { // record
-                LinkedHashMap<String,Field> fields = new LinkedHashMap<String,Field>();
+                LinkedHashMap<String, Field> fields = new LinkedHashMap<String, Field>();
                 RecordSchema result =
                         new RecordSchema(name, space, type.equals("error"));
                 if (name != null) names.put(name, result);
                 JsonNode fieldsNode = schema.get("fields");
                 if (fieldsNode == null || !fieldsNode.isArray())
-                    throw new SchemaParseException("Record has no fields: "+schema);
+                    throw new SchemaParseException("Record has no fields: " + schema);
                 for (JsonNode field : fieldsNode) {
                     JsonNode fieldNameNode = field.get("name");
                     if (fieldNameNode == null)
-                        throw new SchemaParseException("No field name: "+field);
+                        throw new SchemaParseException("No field name: " + field);
                     JsonNode fieldTypeNode = field.get("type");
                     if (fieldTypeNode == null)
-                        throw new SchemaParseException("No field type: "+field);
+                        throw new SchemaParseException("No field type: " + field);
                     Schema fieldSchema = parse(fieldTypeNode, names);
                     fields.put(fieldNameNode.getTextValue(),
                             new Field(fieldSchema, field.get("default")));
@@ -667,7 +874,7 @@ public abstract class Schema {
             } else if (type.equals("enum")) {           // enum
                 JsonNode symbolsNode = schema.get("symbols");
                 if (symbolsNode == null || !symbolsNode.isArray())
-                    throw new SchemaParseException("Enum has no symbols: "+schema);
+                    throw new SchemaParseException("Enum has no symbols: " + schema);
                 List<String> symbols = new ArrayList<String>();
                 for (JsonNode n : symbolsNode)
                     symbols.add(n.getTextValue());
@@ -684,14 +891,14 @@ public abstract class Schema {
                 if (name != null) names.put(name, result);
                 return result;
             } else
-                throw new SchemaParseException("Type not yet supported: "+type);
+                throw new SchemaParseException("Type not yet supported: " + type);
         } else if (schema.isArray()) {                // union
             List<Schema> types = new ArrayList<Schema>(schema.size());
             for (JsonNode typeNode : schema)
                 types.add(parse(typeNode, names));
             return new UnionSchema(types);
         } else {
-            throw new SchemaParseException("Schema not yet supported: "+schema);
+            throw new SchemaParseException("Schema not yet supported: " + schema);
         }
     }
 
